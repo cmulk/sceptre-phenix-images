@@ -19,7 +19,9 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    container: ghcr.io/sandialabs/sceptre-phenix/phenix:main
+    container:
+      image: ghcr.io/sandialabs/sceptre-phenix/phenix:main
+      options: --privileged
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
