@@ -39,3 +39,9 @@ jobs:
           mkdir out
           phenix image create -O ./overlays/bennu,./overlays/brash -T ./scripts/aptly,./scripts/bennu --format qcow2 --release focal -c bennu --size 10G
           phenix image build bennu -o ./out -x
+
+      # upload bennu qc2 as artifact
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bennu.qc2
+          path: ./out/bennu.qc2         
