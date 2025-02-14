@@ -34,4 +34,6 @@ jobs:
       - name: Run a multi-line script
         run: |
           phenix version
-          ls -lh
+          mkdir out
+          phenix image create -O ./overlays/bennu,./overlays/brash -T ./scripts/aptly,./scripts/bennu --format qcow2 --release focal -c bennu --size 10G
+          phenix image build bennu -o ./out -x
