@@ -26,6 +26,7 @@ jobs:
             /opt/minimega/bin/minirouter
   # build using phenix image builder
   build:
+    needs: get-miniccc
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/sandialabs/sceptre-phenix/phenix:main
