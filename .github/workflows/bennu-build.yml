@@ -52,13 +52,18 @@ jobs:
         with:
           name: miniexes
           path: /phenix
+      - name: checks
+        run: |
+          ls -lh /phenix
+          ls -lh /tmp/minimega
+          ls -lh /tmp/minimega/minimega
+          ls -lh /tmp/phenix
       - name: bennu image build
         run: |
           phenix version
           mkdir /phenix/out
           phenix image create -O ./overlays/bennu,./overlays/brash -T ./scripts/aptly,./scripts/bennu --format qcow2 --release focal -c bennu --size 10G
           phenix image build bennu -o /phenix/out -x
-          phenix image inject-miniexe /phenix/miniccc /phenix/out/bennu.qc2
       - name: inject miniccc
         run: "phenix image inject-miniexe /phenix/miniccc /phenix/out/bennu.qc2"
       # upload bennu qc2 as artifact
