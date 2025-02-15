@@ -11,8 +11,21 @@ on:
   schedule:
     - cron: '11 11 * * WED'
 jobs:
+  # save minicc and minirouter as artifacts to inject in image later
+  get-miniccc:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/sandialabs/sceptre-phenix/minimega:main
+    steps:
+      - name: upload miniccc and minirouter
+        uses: actions/upload-artifact@v4
+        with:
+          name: miniexes
+          path: |
+            /opt/minimega/bin/miniccc
+            /opt/minimega/bin/minirouter
+  # build using phenix image builder
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/sandialabs/sceptre-phenix/phenix:main
@@ -21,18 +34,24 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
       # Runs a set of commands using the runners shell
+      - name: get miniexes
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: miniexes
       - name: bennu image build
         run: |
           phenix version
           mkdir out
           phenix image create -O ./overlays/bennu,./overlays/brash -T ./scripts/aptly,./scripts/bennu --format qcow2 --release focal -c bennu --size 10G
           phenix image build bennu -o ./out -x
+          phenix image inject-miniexe ./miniccc ./out/bennu.qc2
       # upload bennu qc2 as artifact
       - name: upload qc2
         uses: actions/upload-artifact@v4
         with:
           name: bennu.qc2
           path: ./out/bennu.qc2
+  # upload to github release
   release:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     needs: build
