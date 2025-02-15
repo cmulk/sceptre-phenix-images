@@ -32,17 +32,17 @@ jobs:
       image: ghcr.io/sandialabs/sceptre-phenix/phenix:main
       options: --privileged # needed for kernel device-mapper permissions
       volumes:
-        - /phenix:/phenix:shared
-        - /tmp/minimega:/tmp/minimega
-        - /tmp/phenix:/tmp/phenix
+        - phenix:/phenix:shared
+        - minimega:/tmp/minimega:shared
+        - tmp_phenix:/tmp/phenix:shared
     services:
       minimega: # used for phenix image inject-miniexe
         image: ghcr.io/sandialabs/sceptre-phenix/minimega:main
         options: --privileged # needed for kernel device-mapper permissions
         volumes:
-          - /phenix:/phenix:shared
-          - /tmp/minimega:/tmp/minimega
-          - /tmp/phenix:/tmp/phenix
+          - phenix:/phenix:shared
+          - minimega:/tmp/minimega:shared
+          - tmp_phenix:/tmp/phenix:shared
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
