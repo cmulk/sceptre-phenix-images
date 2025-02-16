@@ -41,11 +41,17 @@ jobs:
         with:
           name: miniexes
 
+      - name: add miniccc
+        run: |
+          mkdir -p ./overlays/miniccc/usr/local/bin
+          cp ./miniccc ./overlays/miniccc/usr/local/bin
+          chmod +x ./overlays/miniccc/usr/local/bin
+
       - name: bennu image build
         run: |
           phenix version
           mkdir ./out
-          phenix image create -O ./overlays/bennu,./overlays/brash -T ./scripts/aptly,./scripts/bennu --format qcow2 --release focal -c bennu --size 10G
+          phenix image create -O ./overlays/bennu,./overlays/brash,./overlays/miniccc -T ./scripts/aptly,./scripts/bennu --format qcow2 --release focal -c bennu --size 10G
           phenix image build bennu -o ./out -x
 
       # upload bennu qc2 as artifact
