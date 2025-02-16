@@ -41,11 +41,13 @@ jobs:
         with:
           name: miniexes
 
+      # add the miniccc binary
+      # the phenix base scripts already include the systemd service
       - name: add miniccc
         run: |
-          mkdir -p ./overlays/miniccc/usr/local/bin
-          cp ./miniccc ./overlays/miniccc/usr/local/bin
-          chmod +x ./overlays/miniccc/usr/local/bin
+          mkdir -p ./overlays/miniccc/opt/minimega/bin
+          cp ./miniccc ./overlays/miniccc/opt/minimega/bin
+          chmod +x ./overlays/miniccc/opt/minimega/bin/miniccc
 
       - name: bennu image build
         run: |
