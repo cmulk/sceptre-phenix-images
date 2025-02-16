@@ -31,18 +31,7 @@ jobs:
     container:
       image: ghcr.io/sandialabs/sceptre-phenix/phenix:main
       options: --privileged # needed for kernel device-mapper permissions
-      volumes:
-        - phenix:/phenix:shared
-        - minimega:/tmp/minimega:shared
-        - tmp_phenix:/tmp/phenix:shared
-    services:
-      minimega: # used for phenix image inject-miniexe
-        image: ghcr.io/sandialabs/sceptre-phenix/minimega:main
-        options: --privileged # needed for kernel device-mapper permissions
-        volumes:
-          - phenix:/phenix:shared
-          - minimega:/tmp/minimega:shared
-          - tmp_phenix:/tmp/phenix:shared
+
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
@@ -51,27 +40,20 @@ jobs:
         uses: actions/download-artifact@v4.1.8
         with:
           name: miniexes
-          path: /phenix
-      - name: checks
-        run: |
-          ls -lh /phenix
-          ls -lh /tmp/minimega
-          ls -lh /tmp/minimega/minimega
-          ls -lh /tmp/phenix
+
       - name: bennu image build
         run: |
           phenix version
-          mkdir /phenix/out
+          mkdir ./out
           phenix image create -O ./overlays/bennu,./overlays/brash -T ./scripts/aptly,./scripts/bennu --format qcow2 --release focal -c bennu --size 10G
-          phenix image build bennu -o /phenix/out -x
-      - name: inject miniccc
-        run: "phenix image inject-miniexe /phenix/miniccc /phenix/out/bennu.qc2"
+          phenix image build bennu -o ./out -x
+
       # upload bennu qc2 as artifact
       - name: upload qc2
         uses: actions/upload-artifact@v4
         with:
           name: bennu.qc2
-          path: /phenix/out/bennu.qc2
+          path: ./out/bennu.qc2
   # upload to github release
   release:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
