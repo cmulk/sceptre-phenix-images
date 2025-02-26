@@ -36,6 +36,7 @@ rm -rf /tmp/labjack
 
 # Install Python dependencies
 pip3 install --no-cache-dir ipython pymodbus
+pip3 install -U PYPOWER==5.1.16 # lock PYPOWER to version that is working
 
 # Set sticky bit on brash binary
 brash=$(which bennu-brash)
