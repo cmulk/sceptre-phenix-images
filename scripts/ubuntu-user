@@ -1,0 +1,8 @@
+# adds a non-root user account called "ubuntu" with sudo permissions
+
+set -ex
+
+useradd --create-home --shell /bin/bash ubuntu
+usermod -aG sudo ubuntu
+echo 'ubuntu   ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/ubuntu
+echo 'ubuntu:ubuntu' | chpasswd
