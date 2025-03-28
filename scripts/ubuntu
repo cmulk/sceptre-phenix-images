@@ -30,11 +30,10 @@ deb http://archive.ubuntu.com/ubuntu/ ${VERSION_CODENAME}-security main restrict
 deb http://archive.ubuntu.com/ubuntu/ ${VERSION_CODENAME}-backports main restricted universe multiverse
 EOF
 
-APT_OPTS='Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"'
 export DEBIAN_FRONTEND=noninteractive
 apt update
-apt upgrade -y -o $APT_OPTS
-apt install -y -o $APT_OPTS net-tools openssh-server iputils-ping vim less nano micro ca-certificates sudo iptables
+apt upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
+apt install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" net-tools openssh-server iputils-ping vim less nano micro ca-certificates sudo iptables
 
 systemctl enable ssh
 
