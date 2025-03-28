@@ -113,7 +113,7 @@ jobs:
       - name: get images from artifacts
         uses: actions/download-artifact@v4.1.8
         with:
-          pattern: *.qc2
+          pattern: "*.qc2"
           path: ./images
           merge-multiple: true
 
