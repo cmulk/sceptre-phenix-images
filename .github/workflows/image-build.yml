@@ -121,6 +121,11 @@ jobs:
         uses: ncipollo/release-action@v1.15.0
         with:
           name: release-${{ steps.date.outputs.date }}
+          body: |
+            Some images are too large to be attached to the release directly.  
+            For the full set of downloadable images, visit the [artifacts page](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
           artifacts: "./images/*.qc2"
           tag: release-${{ steps.date.outputs.date }}
           commit: main
+          generateReleaseNotes: true
+          makeLatest: true
