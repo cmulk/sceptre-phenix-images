@@ -32,7 +32,7 @@ jobs:
           echo "hello" > mytest.txt
           oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
           oras version
-          oras push "ghcr.io/${{ github.repository }}/mytest.txt:latest mytest.txt
+          oras push ghcr.io/${{ github.repository }}/mytest.txt:latest mytest.txt
 
   # build using phenix image builder
   build-bennu:
