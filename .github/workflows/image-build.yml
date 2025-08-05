@@ -24,15 +24,6 @@ jobs:
           path: |
             /opt/minimega/bin/miniccc
             /opt/minimega/bin/minirouter
-  # test-oras:
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - name: test oras
-  #       run: |
-  #         echo "hello" > mytest.txt
-  #         oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-  #         oras version
-  #         oras push ghcr.io/${{ github.repository }}/mytest.txt:latest mytest.txt
 
   # build using phenix image builder
   build-bennu:
@@ -112,7 +103,6 @@ jobs:
           phenix image create -O ./overlays/miniccc -T ./scripts/ubuntu,./scripts/ubuntu-user --format qcow2 --release noble -c ubuntu --size 10G
           phenix image build ubuntu -o ./out -x
 
-      # # upload bennu qc2 as artifact
       # - name: upload qc2
       #   uses: actions/upload-artifact@v4
       #   with:
