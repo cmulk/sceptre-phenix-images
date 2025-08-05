@@ -24,6 +24,16 @@ jobs:
           path: |
             /opt/minimega/bin/miniccc
             /opt/minimega/bin/minirouter
+  test-oras:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test oras
+        run: |
+          echo "hello" > mytest.txt
+          oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+          oras version
+          oras push "ghcr.io/${{ github.repository }}/mytest.txt:latest mytest.txt
+
   # build using phenix image builder
   build-bennu:
     needs: get-miniccc
@@ -132,9 +142,7 @@ jobs:
             if [[ -f "$file" ]]; then
 
               # Push to GHCR with tag 'latest'
-              oras push "ghcr.io/${{ github.repository }}/${file}:latest,${{ steps.date.outputs.date }}" \
-                --artifact-type application/vnd.unknown.layer.v1+qc2 \
-                "$file"
+              oras push "ghcr.io/${{ github.repository }}/${file}:latest,${{ steps.date.outputs.date }}" "$file"
             fi
           done
 
