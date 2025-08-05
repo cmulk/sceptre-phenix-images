@@ -67,8 +67,9 @@ jobs:
       #     path: ./out/bennu.qc2
       - name: publish package with oras
         run: |
+          cd ./out
           oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-          oras push "ghcr.io/${{ github.repository }}/bennu.qc2:${{ github.ref_name }}" ./out/bennu.qc2
+          oras push "ghcr.io/${{ github.repository }}/bennu.qc2:${{ github.ref_name }}" bennu.qc2
           
   build-ubuntu:
     needs: get-miniccc
@@ -110,8 +111,9 @@ jobs:
       #     path: ./out/ubuntu.qc2
       - name: publish package with oras
         run: |
+          cd ./out
           oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-          oras push "ghcr.io/${{ github.repository }}/ubuntu.qc2:${{ github.ref_name }}" ./out/ubuntu.qc2      
+          oras push "ghcr.io/${{ github.repository }}/ubuntu.qc2:${{ github.ref_name }}" ubuntu.qc2      
   # upload to github release
   release:
     if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
