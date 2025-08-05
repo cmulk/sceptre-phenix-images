@@ -24,15 +24,15 @@ jobs:
           path: |
             /opt/minimega/bin/miniccc
             /opt/minimega/bin/minirouter
-  test-oras:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: test oras
-        run: |
-          echo "hello" > mytest.txt
-          oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-          oras version
-          oras push ghcr.io/${{ github.repository }}/mytest.txt:latest mytest.txt
+  # test-oras:
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - name: test oras
+  #       run: |
+  #         echo "hello" > mytest.txt
+  #         oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+  #         oras version
+  #         oras push ghcr.io/${{ github.repository }}/mytest.txt:latest mytest.txt
 
   # build using phenix image builder
   build-bennu:
@@ -43,6 +43,8 @@ jobs:
       options: --privileged # needed for kernel device-mapper permissions
 
     steps:
+      - name: oras install
+        uses: oras-project/setup-oras@v1
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
       # Runs a set of commands using the runners shell
@@ -67,11 +69,16 @@ jobs:
           phenix image build bennu -o ./out -x
 
       # upload bennu qc2 as artifact
-      - name: upload qc2
-        uses: actions/upload-artifact@v4
-        with:
-          name: bennu.qc2
-          path: ./out/bennu.qc2
+      # - name: upload qc2
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: bennu.qc2
+      #     path: ./out/bennu.qc2
+      - name: publish package with oras
+        run: |
+          oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+          oras push "ghcr.io/${{ github.repository }}/bennu.qc2:${{ github.ref_name }}" ./out/bennu.qc2
+          
   build-ubuntu:
     needs: get-miniccc
     runs-on: ubuntu-latest
@@ -80,6 +87,8 @@ jobs:
       options: --privileged # needed for kernel device-mapper permissions
 
     steps:
+      - name: oras install
+        uses: oras-project/setup-oras@v1      
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
       # Runs a set of commands using the runners shell
@@ -103,12 +112,16 @@ jobs:
           phenix image create -O ./overlays/miniccc -T ./scripts/ubuntu,./scripts/ubuntu-user --format qcow2 --release noble -c ubuntu --size 10G
           phenix image build ubuntu -o ./out -x
 
-      # upload bennu qc2 as artifact
-      - name: upload qc2
-        uses: actions/upload-artifact@v4
-        with:
-          name: ubuntu.qc2
-          path: ./out/ubuntu.qc2
+      # # upload bennu qc2 as artifact
+      # - name: upload qc2
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ubuntu.qc2
+      #     path: ./out/ubuntu.qc2
+      - name: publish package with oras
+        run: |
+          oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+          oras push "ghcr.io/${{ github.repository }}/ubuntu.qc2:${{ github.ref_name }}" ./out/ubuntu.qc2      
   # upload to github release
   release:
     if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
@@ -134,17 +147,8 @@ jobs:
         run: |
           oras version
           oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-          cd ./images
-          ls -l
-
-          # Loop through all .qc2 files in the current directory
-          for file in *.qc2; do
-            if [[ -f "$file" ]]; then
-
-              # Push to GHCR with tag 'latest'
-              oras push "ghcr.io/${{ github.repository }}/${file}:latest,${{ steps.date.outputs.date }}" "$file"
-            fi
-          done
+          oras tag ghcr.io/${{ github.repository }}/bennu.qc2:${{ github.ref_name }} latest ${{ steps.date.outputs.date }}
+          oras tag ghcr.io/${{ github.repository }}/ubuntu.qc2:${{ github.ref_name }} latest ${{ steps.date.outputs.date }}
 
       - name: create release
         uses: ncipollo/release-action@v1.15.0
@@ -152,6 +156,7 @@ jobs:
           name: release-${{ steps.date.outputs.date }}
           body: |
             Images can be downloaded from the registry using the oras client: https://oras.land/docs/installation
+            e.g.:
             ```
             oras pull  ghcr.io/${{ github.repository }}/bennu.qc2:latest
             ```
