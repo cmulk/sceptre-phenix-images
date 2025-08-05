@@ -25,7 +25,7 @@ jobs:
             /opt/minimega/bin/miniccc
             /opt/minimega/bin/minirouter
   test-oras:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: test oras
         run: |
