@@ -56,7 +56,7 @@ jobs:
         run: |
           phenix version
           mkdir ./out
-          phenix image create -O ./overlays/bennu,./overlays/brash,./overlays/miniccc -T ./scripts/aptly,./scripts/bennu --format qcow2 --release jammy -c bennu --size 10G
+          phenix image create --compress -O ./overlays/bennu,./overlays/brash,./overlays/miniccc -T ./scripts/aptly,./scripts/bennu --format qcow2 --release jammy -c bennu --size 10G
           phenix image build bennu -o ./out -x
 
       # upload bennu qc2 as artifact
@@ -101,7 +101,7 @@ jobs:
         run: |
           phenix version
           mkdir ./out
-          phenix image create -O ./overlays/miniccc -T ./scripts/ubuntu,./scripts/ubuntu-user --format qcow2 --release noble -c ubuntu --size 10G
+          phenix image create --compress -O ./overlays/miniccc -T ./scripts/ubuntu,./scripts/ubuntu-user --format qcow2 --release noble -c ubuntu --size 10G
           phenix image build ubuntu -o ./out -x
 
       # - name: upload qc2
