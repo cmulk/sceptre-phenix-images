@@ -30,7 +30,7 @@ jobs:
     needs: get-miniccc
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/sandialabs/sceptre-phenix/phenix:31ce034
+      image: ghcr.io/sandialabs/sceptre-phenix/phenix:main
       options: --privileged # needed for kernel device-mapper permissions
 
     steps:
@@ -75,7 +75,7 @@ jobs:
     needs: get-miniccc
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/sandialabs/sceptre-phenix/phenix:31ce034
+      image: ghcr.io/sandialabs/sceptre-phenix/phenix:main
       options: --privileged # needed for kernel device-mapper permissions
 
     steps:
