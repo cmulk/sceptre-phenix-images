@@ -26,5 +26,6 @@ jobs:
       - uses: dataaxiom/ghcr-cleanup-action@v1
         with:
           older-than: 90 day
+          packages: bennu.qc2,ubuntu.qc2
           keep-n-tagged: 5
           exclude-tags: latest
