@@ -154,7 +154,7 @@ jobs:
         uses: oras-project/setup-oras@v1
 
       # Tag images in the registry with 'latest' and date-based tags
-      - name: oras push
+      - name: tag images with date and latest
         run: |
           oras version
           oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
@@ -170,9 +170,11 @@ jobs:
             Images can be downloaded from the registry using the oras client: https://oras.land/docs/installation
             e.g.:
             ```
-            oras pull  ghcr.io/${{ github.repository }}/bennu.qc2:latest
+            oras pull ghcr.io/${{ github.repository }}/bennu.qc2:latest
             ```
-          # artifacts: "./images/*.qc2"
+            You can view the available image builds from the [Package List](https://github.com/orgs/${{ github.repository_owner }}/packages?repo_name=${{ github.event.repository.name }})
+          
+            # artifacts: "./images/*.qc2"
           tag: release-${{ steps.date.outputs.date }}
           commit: main
           generateReleaseNotes: true
