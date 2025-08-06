@@ -25,6 +25,6 @@ jobs:
     steps:
       - uses: dataaxiom/ghcr-cleanup-action@v1
         with:
-          older-than: 90d
+          older-than: 90 day
           keep-n-tagged: 5
           exclude-tags: latest
