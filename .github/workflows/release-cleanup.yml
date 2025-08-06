@@ -16,3 +16,25 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           delete_tags: true
           keep_latest_days: 90
+
+  cleanup-old-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old bennu.qc2 images
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: bennu.qc2
+          package-type: container
+          min-versions-to-keep: 5
+          delete-only-untagged-versions: false
+          # Delete images older than 90 days
+          older-than: 90d
+
+      - name: Delete old ubuntu.qc2 images
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: ubuntu.qc2
+          package-type: container
+          min-versions-to-keep: 5
+          delete-only-untagged-versions: false
+          older-than: 90d
