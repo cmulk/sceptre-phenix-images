@@ -39,6 +39,12 @@ jobs:
 
     steps:
       # Install oras CLI for pushing images to OCI registries
+      - name: test
+        shell: bash
+        run:
+          echo ${GITHUB_SHA:0:7}
+        
+      
       - name: oras install
         uses: oras-project/setup-oras@v1
       # Checkout repository code
