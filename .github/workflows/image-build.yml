@@ -62,7 +62,7 @@ jobs:
         run: |
           phenix version
           mkdir ./out
-          phenix image create --compress -O ./overlays/bennu,./overlays/brash,./overlays/miniccc -T ./scripts/aptly,./scripts/bennu --format qcow2 --release jammy -c bennu --size 10G
+          phenix image create -O ./overlays/bennu,./overlays/brash,./overlays/miniccc -T ./scripts/aptly,./scripts/bennu --format qcow2 --release jammy -c bennu --size 10G
           phenix image build bennu -o ./out -x
 
       # Optionally upload bennu.qc2 as artifact (currently commented out)
@@ -78,7 +78,7 @@ jobs:
           cd ./out
           oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
           oras push "ghcr.io/${{ github.repository }}/bennu.qc2:${{ github.ref_name }}" bennu.qc2
-          
+
   # Job: Build the ubuntu image using the phenix image builder
   build-ubuntu:
     needs: get-miniccc
@@ -90,7 +90,7 @@ jobs:
     steps:
       # Install oras CLI
       - name: oras install
-        uses: oras-project/setup-oras@v1      
+        uses: oras-project/setup-oras@v1
       # Checkout repository code
       - uses: actions/checkout@v4
       # Download miniexes artifact
@@ -111,7 +111,7 @@ jobs:
         run: |
           phenix version
           mkdir ./out
-          phenix image create --compress -O ./overlays/miniccc -T ./scripts/ubuntu,./scripts/ubuntu-user --format qcow2 --release noble -c ubuntu --size 10G
+          phenix image create -O ./overlays/miniccc -T ./scripts/ubuntu,./scripts/ubuntu-user --format qcow2 --release noble -c ubuntu --size 10G
           phenix image build ubuntu -o ./out -x
 
       # Optionally upload ubuntu.qc2 as artifact (currently commented out)
@@ -126,7 +126,7 @@ jobs:
         run: |
           cd ./out
           oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-          oras push "ghcr.io/${{ github.repository }}/ubuntu.qc2:${{ github.ref_name }}" ubuntu.qc2      
+          oras push "ghcr.io/${{ github.repository }}/ubuntu.qc2:${{ github.ref_name }}" ubuntu.qc2
 
   # Job: Tag and release images after successful builds
   release:
@@ -173,7 +173,7 @@ jobs:
             oras pull ghcr.io/${{ github.repository }}/bennu.qc2:latest
             ```
             You can view the available image builds from the [Package List](https://github.com/orgs/${{ github.repository_owner }}/packages?repo_name=${{ github.event.repository.name }})
-          
+
             # artifacts: "./images/*.qc2"
           tag: release-${{ steps.date.outputs.date }}
           commit: main
