@@ -66,10 +66,18 @@ jobs:
         run: |
           docker cp minimega:/opt/minimega/bin/miniccc ${{ github.workspace }}
           docker cp minimega:/opt/minimega/bin/minirouter ${{ github.workspace }}
+
+      # Remove unneeded tools to make more build space
+      - name: free disk space
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          large-packages: false
+
       # Build the non-vyos images using phenix
       - name: ${{ matrix.build }} image build
         if: ${{ matrix.build != 'vyos' }}
         run: make ${{ matrix.build }}
+
       # Build the vyos image using custom build script
       - name: ${{ matrix.build }} image build
         if: ${{ matrix.build == 'vyos' }}
@@ -77,6 +85,7 @@ jobs:
         run: |
           sudo modprobe nbd
           sudo make ${{ matrix.build }}
+
       # Publish the built image to GitHub Container Registry using oras
       - name: publish package with oras
         # Only push package if on the default branch (e.g., main)
